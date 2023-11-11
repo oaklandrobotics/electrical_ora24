@@ -9,7 +9,8 @@ SoftwareSerial odrive_serial(8, 9); // Cause UNO only has one hardware port
 short baudrate = 19200; // Make sure ODrive is set to this as well
 
 ODriveArduino odrive(odrive_serial); // Construct the ODrive interface
-
+int speed = 0;
+int speedHold = 0;
 void setup() {
   odrive_serial.begin(baudrate);
 
@@ -39,7 +40,8 @@ void setup() {
 }
 
 void loop() {
-  float sine_period = 2.0f; // Period of the position sine wave (seconds)
+  
+  /*float sine_period = 2.0f; // Period of the position sine wave (seconds)
 
   float t = 0.001 * millis();
   float period_div = (TWO_PI / sine_period);
@@ -50,13 +52,23 @@ void loop() {
   odrive.setPosition(
     sin(phase), // Position
     cos(phase) * period_div // Velocity Feed-forward
-  );
+  );*/
+  speed = Serial.parseInt();
+  if (speed != 0 && speed > 0)
+  {
+    speedHold = speed;
+  }
+  else if (speed < 0)
+  {
+    speedHold = 0;
+  }
+  odrive.setVelocity((float)speedHold);
 
   // Recieve feedback
   ODriveFeedback feedback = odrive.getFeedback();
-  Serial.print("pos: ");
-  Serial.print(feedback.pos);
-  Serial.print(", ");
+  //Serial.print("pos: ");
+  //Serial.print(feedback.pos);
+  //Serial.print(", ");
   Serial.print("vel: ");
   Serial.print(feedback.vel);
   Serial.println();
