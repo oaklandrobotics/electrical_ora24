@@ -1,0 +1,37 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid 6effcdd9-758a-413d-b060-8a4f492b4c83)
+
+  (paper "A4")
+
+  (title_block
+    (title "LED Stacklight Control Board")
+    (rev "2")
+    (company "Andrew McGhee")
+  )
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 15.24 163.83) (size 34.29 29.21) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid a05bca4f-25c2-40be-b2a5-16c4668ab07b)
+    (property "Sheetname" "LED_Control" (at 15.24 163.1184 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "LEDControlCircuit.kicad_sch" (at 15.24 193.6246 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "StackLight_REV_2"
+        (path "/6effcdd9-758a-413d-b060-8a4f492b4c83" (page "2"))
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
