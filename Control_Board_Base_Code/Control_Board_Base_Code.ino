@@ -31,13 +31,13 @@ Digital 13:
 
 MCP2515Class& can_intf = CAN;
 
-#define MCP2515_CS 9
+#define MCP2515_CS 8
 #define MCP2515_INT 9
 #define MCP2515_CLK_HZ 8000000
 
 static inline void receiveCallback(int packet_size) {
   if (packet_size > 8) {
-    return; // not supported
+    return;
   }
   CanMsg msg = {.id = (unsigned int)CAN.packetId(), .len = (uint8_t)packet_size};
   CAN.readBytes(msg.buffer, packet_size);
@@ -45,7 +45,6 @@ static inline void receiveCallback(int packet_size) {
 }
 
 bool setupCan() {
-  // configure and initialize the CAN bus interface
   CAN.setPins(MCP2515_CS, MCP2515_INT);
   CAN.setClockFrequency(MCP2515_CLK_HZ);
   if (!CAN.begin(CAN_BAUDRATE)) {
@@ -56,8 +55,8 @@ bool setupCan() {
   return true;
 }
 
-ODriveCAN odrv0(wrap_can_intf(can_intf), ODRV0_NODE_ID); // Standard CAN message ID
-ODriveCAN* odrives[] = {&odrv0}; // Make sure all ODriveCAN instances are accounted for here
+ODriveCAN odrv0(wrap_can_intf(can_intf), ODRV0_NODE_ID);
+ODriveCAN* odrives[] = {&odrv0}; 
 
 struct ODriveUserData {
   Heartbeat_msg_t last_heartbeat;
@@ -80,22 +79,13 @@ void onCanMessage(const CanMsg& msg) {
   }
 }
 
-
-
-int LED = 13;
-
-
 void setup() {
-  
   Serial.begin(115200);
-  for (int i = 0; i < 30 && !Serial; ++i) {
-  delay(100);
-  }
   delay(200);
 
-    if (!setupCan()) {
+  if (!setupCan()) {
     Serial.println("CAN failed to initialize: reset required");
-    while (true); // spin indefinitely
+    while (true); 
   }
 
   Serial.println("Waiting for ODrive...");
@@ -105,14 +95,8 @@ void setup() {
   }
 
   Serial.println("found ODrive");
-  
-
 }
 
 void loop() {
-  
   pumpEvents(can_intf);
-
-  
-    
 }
