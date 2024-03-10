@@ -18902,7 +18902,7 @@
 		(layer "Edge.Cuts")
 		(uuid "f8bcbb13-d6ee-4105-8d37-43dc75d74a8a")
 	)
-	(gr_text "ORA IGVC 2023/24 Control Board REV 1"
+	(gr_text "ORA IGVC 2023/24 Zenith Rev 2\n"
 		(at 181.6 95.8 0)
 		(layer "B.SilkS")
 		(uuid "049ee703-fe00-44ae-b618-2a95303d7143")
