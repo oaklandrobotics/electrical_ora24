@@ -1,4 +1,11 @@
-23041160940828774
+23044579467809993
+AdditionalParts
+AMPHENOL_10118192-0002LF
+
+
+0
+11
+11
 AdditionalParts
 CONN_SM04B-GHS-TB_JST
 
@@ -6,6 +13,13 @@ SM04B-GHS-TB
 0
 6
 6
+AdditionalParts
+ORA_Logo_V2
+
+
+0
+0
+0
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
