@@ -6437,12 +6437,6 @@
 		(uuid "93551b6b-8332-48ff-8869-00fa49a18cbd")
 	)
 	(junction
-		(at 46.99 72.39)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a17664c6-ca2f-4543-a8f6-c1b76b1127d3")
-	)
-	(junction
 		(at 88.9 34.29)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6748,7 +6742,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 33.02) (xy 144.78 33.02)
+			(xy 140.97 33.02) (xy 146.05 33.02)
 		)
 		(stroke
 			(width 0)
@@ -7115,26 +7109,6 @@
 			(type default)
 		)
 		(uuid "3b6c2cf3-967e-41f9-bc29-70d8f338ac74")
-	)
-	(wire
-		(pts
-			(xy 148.59 31.75) (xy 144.78 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3ce504f8-bd3e-4777-b803-af881fcd5546")
-	)
-	(wire
-		(pts
-			(xy 46.99 72.39) (xy 55.88 72.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3db670b6-0db1-4f48-967a-be0eec177d6c")
 	)
 	(wire
 		(pts
@@ -7688,7 +7662,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 31.75) (xy 165.1 30.48)
+			(xy 168.91 33.02) (xy 168.91 30.48)
 		)
 		(stroke
 			(width 0)
@@ -8008,6 +7982,16 @@
 	)
 	(wire
 		(pts
+			(xy 162.56 33.02) (xy 168.91 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cca0d2c4-551f-431e-8d98-c2405976e9bc")
+	)
+	(wire
+		(pts
 			(xy 144.78 40.64) (xy 149.86 40.64)
 		)
 		(stroke
@@ -8098,16 +8082,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 31.75) (xy 144.78 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d70d9662-74e5-4655-aa04-35a95b1478bc")
-	)
-	(wire
-		(pts
 			(xy 71.12 194.31) (xy 71.12 196.85)
 		)
 		(stroke
@@ -8128,16 +8102,6 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 31.75) (xy 154.94 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d9c00a38-1855-48ca-adfa-3b82f128b616")
-	)
-	(wire
-		(pts
 			(xy 60.96 201.93) (xy 63.5 201.93)
 		)
 		(stroke
@@ -8155,16 +8119,6 @@
 			(type default)
 		)
 		(uuid "da56f9d7-e520-47d0-8a56-29f927dcb719")
-	)
-	(wire
-		(pts
-			(xy 162.56 31.75) (xy 165.1 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dc9ae548-195b-4164-a341-5c7e937bafb1")
 	)
 	(wire
 		(pts
@@ -8235,6 +8189,16 @@
 			(type default)
 		)
 		(uuid "e318a69e-d081-4f87-9563-8bf5c15351dd")
+	)
+	(wire
+		(pts
+			(xy 151.13 33.02) (xy 154.94 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e6952a03-d3f3-434f-bf97-624489638a2a")
 	)
 	(wire
 		(pts
@@ -9008,6 +8972,27 @@
 		(uuid "1f81edce-7255-456c-bba0-ad670e4182f7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 46.0442 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
+	(global_label "VBUS"
+		(shape input)
+		(at 153.67 33.02 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "22098257-0eea-4736-8f3a-89ea6741176e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 153.67 25.1362 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10168,6 +10153,27 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+			)
+		)
+	)
+	(global_label "VBUS"
+		(shape input)
+		(at 55.88 72.39 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e5145081-8071-4188-9abe-a2fde6dc586f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 47.9962 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 			)
 		)
 	)
@@ -14790,71 +14796,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
-		(at 46.99 72.39 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "8ea594bc-952d-40c6-9107-9c7d19e6119a")
-		(property "Reference" "#PWR048"
-			(at 46.99 76.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 49.784 70.358 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 46.99 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 46.99 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 46.99 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1fc733d9-0d42-4bbc-b208-338441822c46")
-		)
-		(instances
-			(project "ORA_ControlBoard-main_Rev2"
-				(path "/572316db-cdec-412d-a76e-a4e677e62869"
-					(reference "#PWR048")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 210.82 208.28 0)
 		(unit 1)
@@ -14996,7 +14937,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Schottky")
-		(at 158.75 31.75 180)
+		(at 158.75 33.02 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15004,7 +14945,7 @@
 		(dnp no)
 		(uuid "90d12ddd-9e8b-4aea-8dbb-3301c4a4fe6a")
 		(property "Reference" "D3"
-			(at 158.75 26.416 0)
+			(at 163.322 34.544 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15012,7 +14953,7 @@
 			)
 		)
 		(property "Value" "1N5819"
-			(at 158.75 28.956 0)
+			(at 161.036 29.972 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15020,7 +14961,7 @@
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
-			(at 158.75 31.75 0)
+			(at 158.75 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15029,7 +14970,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 158.75 31.75 0)
+			(at 158.75 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15038,7 +14979,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 158.75 31.75 0)
+			(at 158.75 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17259,76 +17200,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C_Small")
-		(at 46.99 74.93 0)
-		(mirror y)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d2094821-7e54-4b9a-9889-8a19f9266c8e")
-		(property "Reference" "C7"
-			(at 44.45 73.6663 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10uF"
-			(at 44.45 76.2063 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 46.99 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 46.99 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 46.99 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8a49d4a2-b81a-403e-a188-4f3ba5466e72")
-		)
-		(pin "2"
-			(uuid "3316696e-c132-4cbe-b22c-baee3c538c99")
-		)
-		(instances
-			(project "ORA_ControlBoard-main_Rev2"
-				(path "/572316db-cdec-412d-a76e-a4e677e62869"
-					(reference "C7")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 60.96 214.63 0)
 		(unit 1)
@@ -17594,7 +17465,7 @@
 	)
 	(symbol
 		(lib_id "Device:Polyfuse_Small")
-		(at 151.13 31.75 90)
+		(at 148.59 33.02 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -17602,7 +17473,7 @@
 		(dnp no)
 		(uuid "e376832f-3aee-4171-861f-2116d27a1eff")
 		(property "Reference" "F1"
-			(at 152.4 28.702 90)
+			(at 149.86 29.972 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17611,7 +17482,7 @@
 			)
 		)
 		(property "Value" "MF-MSMF050-2"
-			(at 155.702 26.924 90)
+			(at 151.384 25.4 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17620,7 +17491,7 @@
 			)
 		)
 		(property "Footprint" "Fuse:Fuse_1812_4532Metric_Pad1.30x3.40mm_HandSolder"
-			(at 156.21 30.48 0)
+			(at 153.67 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17630,7 +17501,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 151.13 31.75 0)
+			(at 148.59 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17639,7 +17510,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 151.13 31.75 0)
+			(at 148.59 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17946,7 +17817,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 165.1 30.48 0)
+		(at 168.91 30.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -17954,7 +17825,7 @@
 		(dnp no)
 		(uuid "f55f7308-25db-41a8-99fa-9476cf836f04")
 		(property "Reference" "#PWR018"
-			(at 165.1 34.29 0)
+			(at 168.91 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17963,7 +17834,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 164.846 26.924 0)
+			(at 168.656 26.924 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17971,7 +17842,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 165.1 30.48 0)
+			(at 168.91 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17980,7 +17851,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 165.1 30.48 0)
+			(at 168.91 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17989,7 +17860,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 165.1 30.48 0)
+			(at 168.91 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18135,71 +18006,6 @@
 			(project "ORA_ControlBoard-main_Rev2"
 				(path "/572316db-cdec-412d-a76e-a4e677e62869"
 					(reference "#PWR030")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 46.99 77.47 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "ff2ac9c3-a953-4655-bf88-0df0cab94fa1")
-		(property "Reference" "#PWR016"
-			(at 46.99 83.82 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 43.434 79.248 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 46.99 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 46.99 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 46.99 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ce04b1b5-ef49-4b2b-9668-a800c7520cec")
-		)
-		(instances
-			(project "ORA_ControlBoard-main_Rev2"
-				(path "/572316db-cdec-412d-a76e-a4e677e62869"
-					(reference "#PWR016")
 					(unit 1)
 				)
 			)
