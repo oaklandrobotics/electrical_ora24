@@ -6449,6 +6449,12 @@
 		(uuid "ace9d1c2-e9ff-4e7e-bf48-071154d01499")
 	)
 	(junction
+		(at 153.67 33.02)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ad3f4c1c-49f4-436f-b4da-5d624d2ff26f")
+	)
+	(junction
 		(at 283.21 121.92)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7022,6 +7028,16 @@
 	)
 	(wire
 		(pts
+			(xy 153.67 33.02) (xy 154.94 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2fd5d40a-68ef-41e1-9e49-3ce74bb0d866")
+	)
+	(wire
+		(pts
 			(xy 68.58 138.43) (xy 69.85 138.43)
 		)
 		(stroke
@@ -7362,6 +7378,16 @@
 	)
 	(wire
 		(pts
+			(xy 151.13 33.02) (xy 153.67 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "66ba3776-ed43-4a68-a3af-15af06a47b75")
+	)
+	(wire
+		(pts
 			(xy 276.86 104.14) (xy 278.13 104.14)
 		)
 		(stroke
@@ -7649,6 +7675,16 @@
 			(type default)
 		)
 		(uuid "96f73dde-ea8f-47ea-af11-c8559a9318de")
+	)
+	(wire
+		(pts
+			(xy 153.67 30.48) (xy 153.67 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "97ee1560-40c4-41a4-96fa-0249f392e2d8")
 	)
 	(wire
 		(pts
@@ -8189,16 +8225,6 @@
 			(type default)
 		)
 		(uuid "e318a69e-d081-4f87-9563-8bf5c15351dd")
-	)
-	(wire
-		(pts
-			(xy 151.13 33.02) (xy 154.94 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e6952a03-d3f3-434f-bf97-624489638a2a")
 	)
 	(wire
 		(pts
@@ -8982,7 +9008,7 @@
 	)
 	(global_label "VBUS"
 		(shape input)
-		(at 153.67 33.02 90)
+		(at 153.67 30.48 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8992,7 +9018,7 @@
 		)
 		(uuid "22098257-0eea-4736-8f3a-89ea6741176e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 153.67 25.1362 90)
+			(at 153.67 22.5962 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9715,7 +9741,7 @@
 			)
 		)
 	)
-	(global_label "CAN_H"
+	(global_label "CAN+"
 		(shape input)
 		(at 193.04 111.76 180)
 		(fields_autoplaced yes)
@@ -9727,7 +9753,7 @@
 		)
 		(uuid "aaf369d1-b8b8-4475-8e39-50160104d793")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.0676 111.76 0)
+			(at 184.7933 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9757,7 +9783,7 @@
 			)
 		)
 	)
-	(global_label "CAN_L"
+	(global_label "CAN-"
 		(shape input)
 		(at 289.56 101.6 0)
 		(fields_autoplaced yes)
@@ -9769,7 +9795,7 @@
 		)
 		(uuid "ad1a2386-c679-4b4a-b8b3-17d641ce01cf")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 298.23 101.6 0)
+			(at 297.8067 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9946,7 +9972,7 @@
 			)
 		)
 	)
-	(global_label "CAN_L"
+	(global_label "CAN-"
 		(shape input)
 		(at 193.04 114.3 180)
 		(fields_autoplaced yes)
@@ -9958,7 +9984,7 @@
 		)
 		(uuid "c3967a55-a191-4e5c-a99d-c4fe7e824841")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.37 114.3 0)
+			(at 184.7933 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10177,7 +10203,7 @@
 			)
 		)
 	)
-	(global_label "CAN_L"
+	(global_label "CAN-"
 		(shape input)
 		(at 193.04 140.97 180)
 		(fields_autoplaced yes)
@@ -10189,7 +10215,7 @@
 		)
 		(uuid "e91da1aa-2aca-4561-b023-425804e958e4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.37 140.97 0)
+			(at 184.7933 140.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10198,7 +10224,7 @@
 			)
 		)
 	)
-	(global_label "CAN_H"
+	(global_label "CAN+"
 		(shape input)
 		(at 289.56 93.98 0)
 		(fields_autoplaced yes)
@@ -10210,7 +10236,7 @@
 		)
 		(uuid "ee150a96-711b-414b-b187-32085f98ce5b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 298.5324 93.98 0)
+			(at 297.8067 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10324,7 +10350,7 @@
 			)
 		)
 	)
-	(global_label "CAN_H"
+	(global_label "CAN+"
 		(shape input)
 		(at 193.04 138.43 180)
 		(fields_autoplaced yes)
@@ -10336,7 +10362,7 @@
 		)
 		(uuid "fc04f5d0-3203-4e05-9f7d-46bb301964f9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.0676 138.43 0)
+			(at 184.7933 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17473,7 +17499,7 @@
 		(dnp no)
 		(uuid "e376832f-3aee-4171-861f-2116d27a1eff")
 		(property "Reference" "F1"
-			(at 149.86 29.972 90)
+			(at 150.114 35.052 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17482,12 +17508,13 @@
 			)
 		)
 		(property "Value" "MF-MSMF050-2"
-			(at 151.384 25.4 90)
+			(at 156.718 37.084 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Fuse:Fuse_1812_4532Metric_Pad1.30x3.40mm_HandSolder"
