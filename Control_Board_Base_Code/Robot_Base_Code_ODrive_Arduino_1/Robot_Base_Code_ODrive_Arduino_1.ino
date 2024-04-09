@@ -252,7 +252,8 @@ void loop()
     Serial.println(feedback.Vel_Estimate);
   }
 
-  if (odrv1_user_data.received_feedback) {
+  if (odrv1_user_data.received_feedback) 
+  {
     Get_Encoder_Estimates_msg_t feedback = odrv1_user_data.last_feedback;
     odrv1_user_data.received_feedback = false;
     Serial.print("ODrive 1 Velocity:");
@@ -260,9 +261,7 @@ void loop()
   }
 }
 
-// Converts Joystick values into Revolutions/Second and sends data to ODrive over CAN
-void ODriveMovement(double verticalVelocity, double horizontalVelocity) // redo math for turns/second
-{
+void ODriveMovement(double verticalVelocity, double horizontalVelocity) {
   // Scales inputs to directional vector
   verticalVelocity = constrain(verticalVelocity, -1.0, 1.0);
   horizontalVelocity = constrain(horizontalVelocity, -1.0, 1.0);
@@ -271,11 +270,20 @@ void ODriveMovement(double verticalVelocity, double horizontalVelocity) // redo 
   double leftMotorVel = verticalVelocity - horizontalVelocity;
   double rightMotorVel = verticalVelocity + horizontalVelocity;
 
-  // Converts the velocity requested into Revolutions / second
-  const int maxVelocity = 5; // IGVC rules, should be meters/second units but not sure
-  const double wheelCircumference = 2 * M_PI * 0.1524; // Circumference of the wheel in meters
-  double leftMotorRPS= (leftMotorVel * maxVelocity) / wheelCircumference; // Turns/second
-  double rightMotorRPS = (rightMotorVel * maxVelocity) / wheelCircumference; // Turns/second
+  // Gearbox ratio
+  const double gearboxRatio = 21.0;
+
+  // Input RPM
+  const double inputRPM = 4400.0;
+
+  // Converts the velocity requested into Turns / second
+  const double maxVelocity = 5.0; // IGVC rules, should be meters/second units but not sure
+  double leftMotorRPS = leftMotorVel * maxVelocity; // Turns/second
+  double rightMotorRPS = rightMotorVel * maxVelocity; // Turns/second
+
+  // Adjust for gearbox ratio and input RPM
+  leftMotorRPS = (leftMotorRPS / gearboxRatio) * (inputRPM / 60.0);
+  rightMotorRPS = (rightMotorRPS / gearboxRatio) * (inputRPM / 60.0);
 
   // Send velocity CAN commands to left and right motors
   odrv0.setVelocity(leftMotorRPS);
