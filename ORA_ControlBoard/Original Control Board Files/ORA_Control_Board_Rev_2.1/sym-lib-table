@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "2023-11-08_00-09-48")(type "KiCad")(uri "C:/Users/andmc/Documents/GitHub/ORA_ControlBoard/Libraries/2023-11-08_00-09-48.kicad_sym")(options "")(descr ""))
+  (lib (name "CustomParts")(type "KiCad")(uri "${KIPRJMOD}/CustomParts.kicad_sym")(options "")(descr ""))
+  (lib (name "New_Library")(type "KiCad")(uri "${KIPRJMOD}/New_Library.kicad_sym")(options "")(descr ""))
+)

@@ -1,0 +1,7 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "footprints")(type "KiCad")(uri "C:/Users/andmc/Documents/GitHub/ORA_ControlBoard/Libraries/footprints.pretty")(options "")(descr ""))
+  (lib (name "Custom_Parts")(type "KiCad")(uri "${KIPRJMOD}/Custom_Parts.pretty")(options "")(descr ""))
+  (lib (name "Pics")(type "KiCad")(uri "C:/Users/andmc/Documents/GitHub/ORA_ControlBoard/Pics")(options "")(descr ""))
+  (lib (name "AdditionalParts")(type "KiCad")(uri "${KIPRJMOD}/AdditionalParts.pretty")(options "")(descr ""))
+)
