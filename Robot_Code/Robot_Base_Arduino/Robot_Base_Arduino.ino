@@ -5,7 +5,7 @@
 #include <mcp_can.h>
 
 #define CAN_BAUDRATE 500000
-#define CAN0_INT 2 // Set INT to pin 2 (This is the Interrupt pin)
+#define CAN0_INT 2 // This is the Interrupt pin
 #define ODRV0_NODE_ID 0 // Left Motor
 #define ODRV1_NODE_ID 1 // Right Motor
 
@@ -17,8 +17,6 @@ MCP_CAN CAN0(10);
 #define MCP2515_INT 2
 #define MCP2515_CLK_HZ 8000000
 #define EStop 0 // Hardware EStop
-#define IMU_SDA 2 // On AtMega32U4 Connected to Pin 19 (PD1)
-#define IMU_SCL 3 // On AtMega32U4 Connected to Pin 18 (PD0) // CHECK
 
 /*
 // LED Declarations
@@ -28,20 +26,22 @@ MCP_CAN CAN0(10);
 */
 
 // Robot State Declarations
-#define EStopButtonIndicator 4 // On AtMega32U4 Connected to Pin 25 (PD4)
-#define AutonButtonIndicator 5 // On AtMega32U4 Connected to Pin 26 (PD6)
+#define EStopButtonIndicator 4
+#define AutonButtonIndicator 5
 
 // Battery Voltage Detection Declaration
-#define Battery_Voltage A0 // On AtMega32U4 Connected to Pin 27 (PF0)
+#define Battery_Voltage A0
 
-
-#define Wheel_Diameter 8
+// Physical perameters of robot
+#define Wheel_Radius 0.184 // meters
+#define Wheel_Seperation 0.7112 // meters
+#define Max_Velocity = 2.2352 //  Speed limit m/s according to IGVC rules
 
 // Global Variable Declaration
 
 // Controller Variables
-int verticalMov = 0;
-int horizontalMov = 0;
+int angularMov = 0;
+int linearMov = 0;
 bool EStopButton = false;
 bool EStopState = false;
 bool prevEStopButton = false;
@@ -60,6 +60,9 @@ byte msgWheelSpeed[8];
 double rightWheelSpeed;
 double leftWheelSpeed;
 
+// Variables to store encoder wheel speed 
+double odrv0EncoderVel;
+double odrv1EncoderVel;
 
 // Function Prototypes
 static inline void receiveCallback(int);
@@ -96,9 +99,6 @@ void setup()
   pinMode(EStop, INPUT);
 
   pinMode(CAN0_INT, INPUT);
-
-  pinMode(IMU_SCL, INPUT); // Work on later
-  pinMode(IMU_SDA, INPUT); // Work on later
 
   pinMode(EStopButtonIndicator, OUTPUT);
   pinMode(AutonButtonIndicator, OUTPUT);
@@ -167,36 +167,53 @@ void loop()
   // Fetches values from controller that are sent over I2C
   fetchControllerData();
 
+  /*
+  // Physical button is engaged, making the EStop pin read a low signal not a high signal
+  if(digitalRead(EStop) == LOW)
+  {
+
+  }
+  */
+
   // Falling Edge Detection (Goes from High to Low)
   // EStop (If statement) only activates when button is pressed
   if (prevEStopButton == HIGH && EStopButton == LOW)
   {
     // Toggles EStop State
+    // If state was off before then the action of pressing the button means that it is enabled
     if(!EStopState)
     {
-      ODriveEStop();
       EStopState = true;
-      digitalWrite(EStopButtonIndicator, HIGH);
     }
 
     else
     {
-      ODriveControlState();
-      ODriveMovement(verticalMov, horizontalMov);
       EStopState = false;
-      digitalWrite(EStopButtonIndicator, LOW);
     }
   } 
-
+  
   prevEStopButton = EStopButton;
 
-  if(!EStopState)
+  if(EStopState)
   {
-    if (AutonButton == LOW && prevAutonButton == HIGH) // I may have to change what ID the ODrives are listening to?
+    ODriveEStop();
+    digitalWrite(EStopButtonIndicator, HIGH);
+  }
+  else
+  {
+    ODriveControlState();
+    ODriveMovement(angularMov, linearMov);
+    digitalWrite(EStopButtonIndicator, LOW);
+  }
+
+  if(!EStopState) // do thing that you did previously
+  {
+    if (AutonButton == LOW && prevAutonButton == HIGH)
     {
+      // If state was off before then the action of pressing the button means that it is enabled
       if(!AutonState)
       {
-        autonMovementData(); // Receives data from path planner and send motor speeds to ODrives
+        autonMovement();
         AutonState = true;
         digitalWrite(AutonButtonIndicator, HIGH);
       }
@@ -211,10 +228,20 @@ void loop()
 
   prevAutonButton = AutonButton;
 
-  // Prints ODrive Velocities and Position via Encoders
-  //ODriveEncoderData();
+  //autonEncoderData();
 
-  delay(10);
+  // Prints ODrive Velocities and Position via Encoders
+  //ViewODriveEncoderData();
+
+  // Physical EStop is engaged (Set all states to safe states)
+  
+  //else
+  //{
+
+  //}
+  
+
+  delay(50);
 }
 
 void fetchControllerData()
@@ -225,13 +252,13 @@ void fetchControllerData()
   // Checks to see if data is recieved over I2C. If so sets values from controller to predefined variables
   if(Wire.available() >= sizeof(int) + sizeof(int) + sizeof(bool) + sizeof(bool))
   {
-    // Read vertical movement from left joystick
-    verticalMov = Wire.read();
-    verticalMov |= Wire.read() << 8; // Combines with the next byte
+    // Read rotational movement from left joystick
+    angularMov = Wire.read();
+    angularMov |= Wire.read() << 8; // Combines with the next byte
 
-    // Read horizontal movement from left joystick
-    horizontalMov = Wire.read();
-    horizontalMov |= Wire.read() << 8; // Combines with the next byte
+    // Read linear movement from left joystick
+    linearMov = Wire.read();
+    linearMov |= Wire.read() << 8; // Combines with the next byte
 
     // Read EStopButton from right bumper
     EStopButton = Wire.read();
@@ -242,41 +269,45 @@ void fetchControllerData()
     // Reads controller values from ESP-32
     // ViewControllerData()
   } 
-  else
+  else // make this engage estop
   {
-    verticalMov = 0;
-    horizontalMov = 0;
-    EStopState = false;
+    angularMov = 0;
+    linearMov = 0;
+    EStopState = true; // check if this logic makes sure if estop actually engages and doesn't mess up 
     AutonState = false;
     Serial.println("Insufficient bytes received");
   }
 }
 
-void ODriveMovement(double verticalVelocity, double horizontalVelocity) // Confirm if working
+void ODriveMovement(double angularVelocity, double linearVelocity) // Confirm if working
 {
   // Scales inputs to directional velocity vectors
-  verticalVelocity = constrain(verticalVelocity, -1.0, 1.0);
-  horizontalVelocity = constrain(horizontalVelocity, -1.0, 1.0);
+  angularVelocity = constrain(angularVelocity, -1.0, 1.0);
+  linearVelocity = constrain(linearVelocity, -1.0, 1.0);
 
-  // Standard for differential drive control
-  double leftMotorVel = verticalVelocity - horizontalVelocity;
-  double rightMotorVel = verticalVelocity + horizontalVelocity;
 
-  // Gearbox ratio
-  const double gearboxRatio = 21.0;
+  
+  //original
+  // Radians Per Second
+  double leftMotorTPS = (1 / Wheel_Radius) * (linearVelocity - ((Wheel_Seperation * angularVelocity * 0.56) / 2));
+  double rightMotorTPS = (1 / Wheel_Radius) * (linearVelocity + ((Wheel_Seperation * angularVelocity * 0.56) / 2));
 
-  // Input RPM
-  const double inputRPM = 4400.0;
+  // Converting to Turns per second
+  leftMotorTPS = (leftMotorTPS / (2 * M_PI)) * 50;
+  rightMotorTPS = rightMotorTPS / (2 * M_PI) * 50;
+  
+  Serial.println("Angular Velocity: " + (String) angularVelocity + "\tLinear Velocity: " + (String) linearVelocity + "\tLeft Motor: " + (String) leftMotorTPS + "\tRight Motor: " + (String) rightMotorTPS);
+  /*
+  // Op 2
+  // Radians Per Second
+  double leftMotorTPS = (1 / Wheel_Radius) * ((linearVelocity * 40) - ((Wheel_Seperation * angularVelocity * 21) / 2));
+  double rightMotorTPS = (1 / Wheel_Radius) * ((linearVelocity * 40) + ((Wheel_Seperation * angularVelocity * 21) / 2));
 
-  // Converts the velocity requested into turns/second
-  const double maxVelocity = 5.0; //  Speed limit m/s according to IGVC rules
-  double leftMotorTPS = leftMotorVel * maxVelocity; // m/s
-  double rightMotorTPS = rightMotorVel * maxVelocity; // m/s
-
-  // Adjust for gearbox ratio and input RPM
-  leftMotorTPS = (leftMotorTPS / gearboxRatio) * (inputRPM / 60.0); // turns/second
-  rightMotorTPS = (rightMotorTPS / gearboxRatio) * (inputRPM / 60.0); // turns/second
-
+  // Converting to Turns per second
+  leftMotorTPS = leftMotorTPS / (2 * M_PI);
+  rightMotorTPS = rightMotorTPS / (2 * M_PI);
+  */
+  
   // Send velocity CAN commands to left and right motors
   odrv0.setVelocity(leftMotorTPS);
   odrv1.setVelocity(rightMotorTPS);
@@ -306,9 +337,9 @@ void ODriveEStop()
 }
 
 // Send CAN command to put axis into closed loop control state
-void ODriveControlState() // Could combine with estop function (Possibly make function have an input to dictate control state or EStop?)
+void ODriveControlState() 
 {
-  Serial.println("Enabling closed loop control...");
+  //Serial.println("Enabling closed loop control...");
   while (odrv0_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_CLOSED_LOOP_CONTROL || odrv1_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_CLOSED_LOOP_CONTROL) 
   {
     odrv0.clearErrors();
@@ -325,11 +356,11 @@ void ODriveControlState() // Could combine with estop function (Possibly make fu
       pumpEvents(can_intf);  // Pump events for 150ms (Look at example for full explanation)
     }
   }
-  Serial.println("Put into closed loop control state");
+  //Serial.println("Put into closed loop control state");
 }
 
 // Prints position and velocity from each ODrive (For debugging)
-void ODriveEncoderData()
+void ViewODriveEncoderData()
 {
   if (odrv0_user_data.received_feedback) 
   {
@@ -353,11 +384,11 @@ void ODriveEncoderData()
 // Prints received values of controller from ESP-32 (For debugging)
 void ViewControllerData()
 {
-  Serial.print("Received from ESP32 - Vertical Movement: ");
-  Serial.println(verticalMov);
+  Serial.print("Received from ESP32 - Angular Movement: ");
+  Serial.println(angularMov);
 
-  Serial.print("Received from ESP32 - Horizontal Movement: ");
-  Serial.println(horizontalMov);
+  Serial.print("Received from ESP32 - Linear Movement: ");
+  Serial.println(linearMov);
 
   Serial.print("Received from ESP32 - EStop Button: ");
   Serial.println(EStopButton);
@@ -368,7 +399,13 @@ void ViewControllerData()
   Serial.println("------------------------");
 }
 
-void autonMovementData() // Assuming data is given in m/s
+void stateCommunication()
+{
+  
+}
+
+// Receives data from path planner and send motor speeds to ODrives
+void autonMovement() // Assuming data is given in m/s
 {
   unsigned long receivedID;
   byte msgLen;
@@ -426,12 +463,59 @@ void autonMovementData() // Assuming data is given in m/s
     } 
   }
 
-  rightWheelSpeed = rightWheelSpeed / ((M_PI) * Wheel_Diameter);
-  leftWheelSpeed = leftWheelSpeed / ((M_PI) * Wheel_Diameter);
+  rightWheelSpeed = rightWheelSpeed / ((M_PI) * Wheel_Radius);
+  leftWheelSpeed = leftWheelSpeed / ((M_PI) * Wheel_Radius);
 
   odrv0.setVelocity(leftWheelSpeed);
   odrv1.setVelocity(rightWheelSpeed);
+}
 
+// Obtains Encoder data from each ODrive and sends it over CAN to it's respective ID
+void autonEncoderData()
+{
+  // Obtaining ODrive Encoder data
+  if (odrv0_user_data.received_feedback) 
+  {
+    Get_Encoder_Estimates_msg_t feedbackOdrv0 = odrv0_user_data.last_feedback;
+    odrv0_user_data.received_feedback = false;
+    
+    double odrv0EncoderVel = feedbackOdrv0.Vel_Estimate;
+  }
+
+  if (odrv1_user_data.received_feedback) 
+  {
+    Get_Encoder_Estimates_msg_t feedbackOdrv1 = odrv1_user_data.last_feedback;
+    odrv1_user_data.received_feedback = false;
+    double odrv1EncoderVel = feedbackOdrv1.Vel_Estimate;
+  }
+
+  // Sending that data over CAN using left and right wheel IDs
+
+  // leftWheelSpeedID,  ODrv 0 is the left wheel
+  // rightWheelSpeedID, ODrv 1 is the right wheel
+  
+  byte* odrv0EncoderVelBA = (byte*)&odrv0EncoderVel;
+  byte* odrv1EncoderVelBA = (byte*)&odrv1EncoderVel;
+
+  byte leftMsgStatus = CAN0.sendMsgBuf(leftWheelSpeedID, 8, odrv0EncoderVelBA);
+  byte rightMsgStatus = CAN0.sendMsgBuf(rightWheelSpeedID, 8, odrv1EncoderVelBA);
+
+  // Check the feedback message to see if the message was sent successfully (was the message acknowledged)
+  if(leftMsgStatus == CAN_OK)
+  {
+    if(rightMsgStatus == CAN_OK)
+    {
+      //Serial.println("Message Sent Successfully!");
+    }
+    else 
+    {
+      Serial.println("Error Sending Message...");
+    }
+  } 
+  else 
+  {
+    Serial.println("Error Sending Message...");
+  }
 }
 
 // Below are all of the ODriveCAN Specific function declarations
