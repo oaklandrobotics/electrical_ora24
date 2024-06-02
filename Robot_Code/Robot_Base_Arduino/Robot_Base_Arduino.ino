@@ -40,8 +40,8 @@ MCP_CAN CAN0(10);
 // Global Variable Declaration
 
 // Controller Variables
-int angularMov = 0;
-int linearMov = 0;
+int8_t angularMov = 0;
+int8_t linearMov = 0;
 bool EStopButton = false;
 bool EStopState = false;
 bool prevEStopButton = false;
@@ -281,6 +281,8 @@ void fetchControllerData()
 
 void ODriveMovement(double angularVelocity, double linearVelocity) // Confirm if working
 {
+
+
   // Scales inputs to directional velocity vectors
   angularVelocity = constrain(angularVelocity, -1.0, 1.0);
   linearVelocity = constrain(linearVelocity, -1.0, 1.0);
@@ -289,8 +291,8 @@ void ODriveMovement(double angularVelocity, double linearVelocity) // Confirm if
   
   //original
   // Radians Per Second
-  double leftMotorTPS = (1 / Wheel_Radius) * (linearVelocity - ((Wheel_Seperation * angularVelocity * 0.56) / 2));
-  double rightMotorTPS = (1 / Wheel_Radius) * (linearVelocity + ((Wheel_Seperation * angularVelocity * 0.56) / 2));
+  double leftMotorTPS = (1 / Wheel_Radius) * (linearVelocity - ((Wheel_Seperation * angularVelocity) / 2));
+  double rightMotorTPS = (1 / Wheel_Radius) * (linearVelocity + ((Wheel_Seperation * angularVelocity) / 2));
 
   // Converting to Turns per second
   leftMotorTPS = (leftMotorTPS / (2 * M_PI)) * 50;
