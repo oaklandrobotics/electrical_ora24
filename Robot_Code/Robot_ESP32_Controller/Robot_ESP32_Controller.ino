@@ -8,7 +8,7 @@
 #include <PS4Controller.h>
 
 // Variables to stre controller values
-int xPos, yPos; // Left joystick X and Y position values used for differential drive movement
+int8_t xPos, yPos; // Left joystick X and Y position values used for differential drive movement
 bool rBump, lBump; // Left and right bumper states used for E-Stop and Autonomous State respectivly
 int deadband = 5; // Used to offset joystick so resting state is a value of 0
 
@@ -18,7 +18,6 @@ void setup()
   Serial.begin(115200);
   Wire.begin(8); // Join I2C bus with address #8
   Wire.onRequest(requestEvent); // Register request event
-  Serial.print(sizeof(int));
 }
 
 void loop() 
@@ -63,18 +62,18 @@ void requestEvent()
 {
   // Convert the integer joystick positions and boolean button state to byte arrays
   // uint16_t needed as a result of ESP32 and Arduino UNO having different sized integers
-  byte yArray[sizeof(uint16_t)];
-  byte xArray[sizeof(uint16_t)];
+  byte yArray[sizeof(int8_t)];
+  byte xArray[sizeof(int8_t)];
   byte rBumpArray[sizeof(bool)];
   byte lBumpArray[sizeof(bool)];
-  memcpy(yArray, &yPos, sizeof(uint16_t));
-  memcpy(xArray, &xPos, sizeof(uint16_t));
+  memcpy(yArray, &yPos, sizeof(int8_t));
+  memcpy(xArray, &xPos, sizeof(int8_t));
   memcpy(rBumpArray, &rBump, sizeof(bool));
   memcpy(lBumpArray, &lBump, sizeof(bool));
 
   // Send the byte arrays over I2C
-  Wire.write(yArray, sizeof(uint16_t));
-  Wire.write(xArray, sizeof(uint16_t));
+  Wire.write(yArray, sizeof(int8_t));
+  Wire.write(xArray, sizeof(int8_t));
   Wire.write(rBumpArray, sizeof(bool));
   Wire.write(lBumpArray, sizeof(bool));
 }

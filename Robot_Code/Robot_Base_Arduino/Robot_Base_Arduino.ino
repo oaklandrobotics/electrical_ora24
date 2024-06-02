@@ -9,6 +9,13 @@
 #define ODRV0_NODE_ID 0 // Left Motor
 #define ODRV1_NODE_ID 1 // Right Motor
 
+// CAN IDs of the messages we are interested in
+const unsigned long rightWheelSpeedID = 2;
+const unsigned long leftWheelSpeedID = 3;
+const unsigned long rightEncoderID = 4;
+const unsigned long leftEncoderID = 5;
+const unsigned long AutonStateID = 6;
+
 MCP2515Class& can_intf = CAN;
 
 MCP_CAN CAN0(10);
@@ -16,17 +23,10 @@ MCP_CAN CAN0(10);
 #define MCP2515_CS 10
 #define MCP2515_INT 2
 #define MCP2515_CLK_HZ 8000000
-#define EStop 0 // Hardware EStop
-
-/*
-// LED Declarations
-#define LEDPWR_R 4 // On AtMega32U4 Connected to Pin 25 (PD4)
-#define LEDPWR_G 12 // On AtMega32U4 Connected to Pin 26 (PD6)
-#define LEDPWR_B 6 // On AtMega32U4 Connected to Pin 27 (PD7)
-*/
+#define EStop 8 // Hardware EStop
 
 // Robot State Declarations
-#define EStopButtonIndicator 4
+#define EStopButtonIndicator 1
 #define AutonButtonIndicator 5
 
 // Battery Voltage Detection Declaration
@@ -48,10 +48,6 @@ bool prevEStopButton = false;
 bool AutonButton = false;
 bool AutonState = false;
 bool prevAutonButton = false;
-
-// IDs of the messages we are interested in
-const unsigned long rightWheelSpeedID = 2;
-const unsigned long leftWheelSpeedID = 3;
 
 // Buffers to store incoming CAN data
 byte msgWheelSpeed[8];
@@ -167,14 +163,6 @@ void loop()
   // Fetches values from controller that are sent over I2C
   fetchControllerData();
 
-  /*
-  // Physical button is engaged, making the EStop pin read a low signal not a high signal
-  if(digitalRead(EStop) == LOW)
-  {
-
-  }
-  */
-
   // Falling Edge Detection (Goes from High to Low)
   // EStop (If statement) only activates when button is pressed
   if (prevEStopButton == HIGH && EStopButton == LOW)
@@ -184,15 +172,18 @@ void loop()
     if(!EStopState)
     {
       EStopState = true;
+      Serial.println("EStop True");
     }
 
     else
     {
       EStopState = false;
+      Serial.println("EStop False");
     }
-  } 
+  }
   
   prevEStopButton = EStopButton;
+  
 
   if(EStopState)
   {
@@ -226,6 +217,16 @@ void loop()
     }
   }
 
+  if(digitalRead(EStop) == LOW)
+  {
+    digitalWrite(EStopButtonIndicator, HIGH);
+  } 
+
+  else
+  {
+    digitalWrite(EStopButtonIndicator, LOW);
+  }
+
   prevAutonButton = AutonButton;
 
   //autonEncoderData();
@@ -247,20 +248,18 @@ void loop()
 void fetchControllerData()
 {
   // Requests data from slave device 8 (ESP32)
-  Wire.requestFrom(8, sizeof(int) + sizeof(int) + sizeof(bool) + sizeof(bool));
+  Wire.requestFrom(8, sizeof(int8_t) + sizeof(int8_t) + sizeof(bool) + sizeof(bool));
 
   // Checks to see if data is recieved over I2C. If so sets values from controller to predefined variables
-  if(Wire.available() >= sizeof(int) + sizeof(int) + sizeof(bool) + sizeof(bool))
+  if(Wire.available() >= sizeof(int8_t) + sizeof(int8_t) + sizeof(bool) + sizeof(bool))
   {
-    // Read rotational movement from left joystick
-    angularMov = Wire.read();
-    angularMov |= Wire.read() << 8; // Combines with the next byte
+    // Read rotational movement from left joystick (Controller only sends 8 bit values)
+    linearMov = Wire.read();
 
     // Read linear movement from left joystick
-    linearMov = Wire.read();
-    linearMov |= Wire.read() << 8; // Combines with the next byte
+    angularMov = Wire.read();
 
-    // Read EStopButton from right bumper
+    // Read EStopButton from right bumper (Controller only sends 8 bit values)
     EStopButton = Wire.read();
 
     // Read Robot State from left bumper
@@ -279,36 +278,21 @@ void fetchControllerData()
   }
 }
 
-void ODriveMovement(double angularVelocity, double linearVelocity) // Confirm if working
+void ODriveMovement(int8_t angularVelIn, int8_t linearVelIn)
 {
-
-
-  // Scales inputs to directional velocity vectors
-  angularVelocity = constrain(angularVelocity, -1.0, 1.0);
-  linearVelocity = constrain(linearVelocity, -1.0, 1.0);
-
-
+  // Normalize inputs to directional velocity vectors
+  double angularVelocity = (double)angularVelIn / 127.0;
+  double linearVelocity = (double)linearVelIn / 127.0;
   
-  //original
   // Radians Per Second
   double leftMotorTPS = (1 / Wheel_Radius) * (linearVelocity - ((Wheel_Seperation * angularVelocity) / 2));
   double rightMotorTPS = (1 / Wheel_Radius) * (linearVelocity + ((Wheel_Seperation * angularVelocity) / 2));
 
   // Converting to Turns per second
-  leftMotorTPS = (leftMotorTPS / (2 * M_PI)) * 50;
-  rightMotorTPS = rightMotorTPS / (2 * M_PI) * 50;
+  leftMotorTPS = (leftMotorTPS / (2 * M_PI)) * 21;
+  rightMotorTPS = (rightMotorTPS / (2 * M_PI)) * -21;
   
-  Serial.println("Angular Velocity: " + (String) angularVelocity + "\tLinear Velocity: " + (String) linearVelocity + "\tLeft Motor: " + (String) leftMotorTPS + "\tRight Motor: " + (String) rightMotorTPS);
-  /*
-  // Op 2
-  // Radians Per Second
-  double leftMotorTPS = (1 / Wheel_Radius) * ((linearVelocity * 40) - ((Wheel_Seperation * angularVelocity * 21) / 2));
-  double rightMotorTPS = (1 / Wheel_Radius) * ((linearVelocity * 40) + ((Wheel_Seperation * angularVelocity * 21) / 2));
-
-  // Converting to Turns per second
-  leftMotorTPS = leftMotorTPS / (2 * M_PI);
-  rightMotorTPS = rightMotorTPS / (2 * M_PI);
-  */
+  //Serial.println("Angular Velocity: " + (String) angularMov + "\tLinear Velocity: " + (String) linearMov + "\tLeft Motor: " + (String) leftMotorTPS + "\tRight Motor: " + (String) rightMotorTPS);
   
   // Send velocity CAN commands to left and right motors
   odrv0.setVelocity(leftMotorTPS);
@@ -318,7 +302,6 @@ void ODriveMovement(double angularVelocity, double linearVelocity) // Confirm if
 // Sends command over CAN to ODrive to initiate EStop
 void ODriveEStop()
 {
-  Serial.println("Enabling EStop...");
   while (odrv0_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_IDLE || odrv1_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_IDLE) 
   {
     odrv0.clearErrors();
@@ -341,7 +324,7 @@ void ODriveEStop()
 // Send CAN command to put axis into closed loop control state
 void ODriveControlState() 
 {
-  //Serial.println("Enabling closed loop control...");
+  Serial.println("Enabling closed loop control...");
   while (odrv0_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_CLOSED_LOOP_CONTROL || odrv1_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_CLOSED_LOOP_CONTROL) 
   {
     odrv0.clearErrors();
@@ -403,7 +386,9 @@ void ViewControllerData()
 
 void stateCommunication()
 {
-  
+  byte AutonStateBA = (byte)AutonState;
+
+  byte AutonStateMsgStatus = CAN0.sendMsgBuf(AutonStateID, 1, AutonStateBA);
 }
 
 // Receives data from path planner and send motor speeds to ODrives
@@ -419,7 +404,7 @@ void autonMovement() // Assuming data is given in m/s
     CAN0.readMsgBuf(&receivedID, &msgLen, msgWheelSpeed);
     
     // Check if the received message ID matches the right wheel speed ID
-    if (receivedID == rightWheelSpeedID) 
+    if (receivedID == rightWheelSpeedID)
     {
       // Check to see if lenth is 8 bytes (Double)
       if (msgLen == 8) 
@@ -465,9 +450,9 @@ void autonMovement() // Assuming data is given in m/s
     } 
   }
 
-  rightWheelSpeed = rightWheelSpeed / ((M_PI) * Wheel_Radius);
-  leftWheelSpeed = leftWheelSpeed / ((M_PI) * Wheel_Radius);
-
+  leftWheelSpeed = (leftWheelSpeed / (2 * M_PI)) * 21;
+  rightWheelSpeed = (rightWheelSpeed / (2 * M_PI)) * -21;
+  
   odrv0.setVelocity(leftWheelSpeed);
   odrv1.setVelocity(rightWheelSpeed);
 }
@@ -481,14 +466,14 @@ void autonEncoderData()
     Get_Encoder_Estimates_msg_t feedbackOdrv0 = odrv0_user_data.last_feedback;
     odrv0_user_data.received_feedback = false;
     
-    double odrv0EncoderVel = feedbackOdrv0.Vel_Estimate;
+    float odrv0EncoderVel = feedbackOdrv0.Vel_Estimate;
   }
 
   if (odrv1_user_data.received_feedback) 
   {
     Get_Encoder_Estimates_msg_t feedbackOdrv1 = odrv1_user_data.last_feedback;
     odrv1_user_data.received_feedback = false;
-    double odrv1EncoderVel = feedbackOdrv1.Vel_Estimate;
+    float odrv1EncoderVel = feedbackOdrv1.Vel_Estimate;
   }
 
   // Sending that data over CAN using left and right wheel IDs
@@ -498,9 +483,10 @@ void autonEncoderData()
   
   byte* odrv0EncoderVelBA = (byte*)&odrv0EncoderVel;
   byte* odrv1EncoderVelBA = (byte*)&odrv1EncoderVel;
+  
 
-  byte leftMsgStatus = CAN0.sendMsgBuf(leftWheelSpeedID, 8, odrv0EncoderVelBA);
-  byte rightMsgStatus = CAN0.sendMsgBuf(rightWheelSpeedID, 8, odrv1EncoderVelBA);
+  byte leftMsgStatus = CAN0.sendMsgBuf(leftEncoderID, 4, odrv0EncoderVelBA);
+  byte rightMsgStatus = CAN0.sendMsgBuf(rightEncoderID, 4, odrv1EncoderVelBA);
 
   // Check the feedback message to see if the message was sent successfully (was the message acknowledged)
   if(leftMsgStatus == CAN_OK)
