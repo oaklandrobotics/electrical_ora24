@@ -163,6 +163,8 @@ void loop()
   // Fetches values from controller that are sent over I2C
   fetchControllerData();
 
+  // EStop Logic
+
   // Falling Edge Detection (Goes from High to Low)
   // EStop (If statement) only activates when button is pressed
   if (prevEStopButton == HIGH && EStopButton == LOW)
@@ -197,26 +199,44 @@ void loop()
     digitalWrite(EStopButtonIndicator, LOW);
   }
 
-  if(!EStopState) // do thing that you did previously
-  {
+  // Auton Logic
+
+  // EStop has priority
+  //if(!EStopState)
+  //{
+    // Falling Edge Detection (Goes from High to Low)
+    // Auton (If statement) only activates when button is pressed
     if (AutonButton == LOW && prevAutonButton == HIGH)
     {
       // If state was off before then the action of pressing the button means that it is enabled
-      if(!AutonState)
+      if(!AutonState) 
       {
-        autonMovement();
         AutonState = true;
-        digitalWrite(AutonButtonIndicator, HIGH);
       }
       
       else 
       {
         AutonState = false;
-        digitalWrite(AutonButtonIndicator, LOW);
       }
     }
+  //}
+
+  // Checks AutonState data (which is determined by the toggle of the controller button)
+  if(AutonState)
+  {
+    autonMovement();
+    digitalWrite(AutonButtonIndicator, HIGH);
+    //Serial.println("Auton On");
+  }
+  else 
+  {
+    digitalWrite(AutonButtonIndicator, LOW);
+    //Serial.println("Auton Off");
   }
 
+  autonEncoderData();
+
+  // Checks hardware EStop for light indication changes
   if(digitalRead(EStop) == LOW)
   {
     digitalWrite(EStopButtonIndicator, HIGH);
@@ -227,20 +247,8 @@ void loop()
     digitalWrite(EStopButtonIndicator, LOW);
   }
 
-  prevAutonButton = AutonButton;
-
-  //autonEncoderData();
-
   // Prints ODrive Velocities and Position via Encoders
-  //ViewODriveEncoderData();
-
-  // Physical EStop is engaged (Set all states to safe states)
-  
-  //else
-  //{
-
-  //}
-  
+  //ViewODriveEncoderData();  
 
   delay(50);
 }
@@ -324,7 +332,6 @@ void ODriveEStop()
 // Send CAN command to put axis into closed loop control state
 void ODriveControlState() 
 {
-  Serial.println("Enabling closed loop control...");
   while (odrv0_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_CLOSED_LOOP_CONTROL || odrv1_user_data.last_heartbeat.Axis_State != ODriveAxisState::AXIS_STATE_CLOSED_LOOP_CONTROL) 
   {
     odrv0.clearErrors();
@@ -341,7 +348,7 @@ void ODriveControlState()
       pumpEvents(can_intf);  // Pump events for 150ms (Look at example for full explanation)
     }
   }
-  //Serial.println("Put into closed loop control state");
+  //Serial.println("Closed loop control state active");
 }
 
 // Prints position and velocity from each ODrive (For debugging)
@@ -391,8 +398,9 @@ void stateCommunication()
   byte AutonStateMsgStatus = CAN0.sendMsgBuf(AutonStateID, 1, AutonStateBA);
 }
 
+
 // Receives data from path planner and send motor speeds to ODrives
-void autonMovement() // Assuming data is given in m/s
+void autonMovement() // Assuming data is given in rad/sec
 {
   unsigned long receivedID;
   byte msgLen;
