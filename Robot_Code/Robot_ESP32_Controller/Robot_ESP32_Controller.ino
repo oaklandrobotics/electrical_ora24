@@ -14,7 +14,7 @@ int deadband = 5; // Used to offset joystick so resting state is a value of 0
 
 void setup() 
 {
-  PS4.begin("bc:03:58:28:67:42"); // Initialize PS4 controller with MAC address
+  PS4.begin("ac:89:95:6b:70:e4"); // Initialize PS4 controller with MAC address
   Serial.begin(115200);
   Wire.begin(8); // Join I2C bus with address #8
   Wire.onRequest(requestEvent); // Register request event
